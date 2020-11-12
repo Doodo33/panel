@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 from django.contrib.auth.decorators import login_required
 
@@ -34,8 +36,22 @@ def homepage(request):
     return render(request, 'home.html')
 
 
+@login_required()
 def password_change(request):
-    return render(request, 'password_change.html')
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Twoje hasło zostało zmienione')
+            return render(request, 'password_change.html')
+        else:
+            messages.error(request, 'Hasło nieprawidłowe! ')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'password_change.html', {
+        'form': form
+    })
 
 
 @login_required(login_url='login')

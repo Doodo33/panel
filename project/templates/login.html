@@ -115,6 +115,12 @@
 				{% for message in messages %}
 					<p id="messages">{{ message }}</p>
 				{% endfor %}
+
+				<div class="mt-4">
+					<div class="d-flex justify-content-center links">
+						Zapomniałeś hasło ? <a href="{% url 'password_change' %}" class="ml-2">Reset hasła </a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
